@@ -1,0 +1,19 @@
+{
+    "name": "bank-txn",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "start": "node src/api.js",
+        "start:dev": "nodemon src/api.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "kafkajs": "^2.2.4",
+        "node-fetch": "^3.3.2",
+        "uuid": "^9.0.0",
+        "ws": "^8.13.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.22"
+    }
+}
