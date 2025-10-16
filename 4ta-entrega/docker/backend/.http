@@ -1,0 +1,29 @@
+###
+POST http://localhost:3000/transactions
+Content-Type: application/json
+
+{
+  "fromAccount": "12345",
+  "toAccount": "67890",
+  "amount": 1500,
+  "currency": "USD",
+  "userId": "user_1"
+}
+
+###
+POST http://localhost:3000/transactions
+Content-Type: application/json
+
+{
+  "fromAccount": "11111",
+  "toAccount": "22222",
+  "amount": 300,
+  "currency": "USD",
+  "userId": "user_2"
+}
+
+### Ver los eventos Kafka
+WS ws://localhost:8080?userId=user_123
+
+###
+GET http://localhost:8080?userId=user_123
