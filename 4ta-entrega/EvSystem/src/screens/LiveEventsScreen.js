@@ -1,12 +1,10 @@
-import React from "react";
+// screens/LiveEventsScreen.js
+import React, { useContext } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
-import { useTxnEvents } from "../hooks/useTxnEvents";
-
-const USER_ID = "user_123";
+import { TxnEventsContext } from "../context/TxnEventsContext";
 
 export default function LiveEventsScreen() {
-  const events = useTxnEvents(USER_ID);
-  console.log("Eventos actuales:", events);
+  const events = useContext(TxnEventsContext);
 
   return (
     <View style={styles.container}>
