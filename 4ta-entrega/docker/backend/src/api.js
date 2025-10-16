@@ -19,10 +19,12 @@ app.post("/transactions", async (req, res) => {
     payload: { fromAccount, toAccount, amount, currency, userId }
   };
 
+  console.log("📤 Enviando evento a Kafka:", txnCommand);
   await producer.send({
     topic: "txn.commands",
     messages: [{ key: transactionId, value: JSON.stringify(txnCommand) }]
   });
+  console.log("✅ Evento enviado a Kafka");
 
   res.json({ transactionId });
 });

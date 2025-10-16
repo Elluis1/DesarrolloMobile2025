@@ -14,11 +14,22 @@ export default function LiveEventsScreen() {
 
       <FlatList
         data={events}
-        keyExtractor={(item) => item.id || Math.random().toString()}
+        keyExtractor={(item) => item.transactionId + item.type}
         renderItem={({ item }) => (
           <View style={styles.event}>
             <Text style={styles.type}>{item.type}</Text>
-            <Text>{JSON.stringify(item.payload)}</Text>
+            {item.payload.amount !== undefined && (
+              <Text>Monto: {item.payload.amount}</Text>
+            )}
+            {item.payload.holdId && <Text>Hold ID: {item.payload.holdId}</Text>}
+            {item.payload.ledgerTxId && (
+              <Text>Ledger TX: {item.payload.ledgerTxId}</Text>
+            )}
+            {item.payload.risk && <Text>Riesgo: {item.payload.risk}</Text>}
+            {item.payload.channels && (
+              <Text>Canales: {item.payload.channels.join(", ")}</Text>
+            )}
+            {item.payload.userId && <Text>Usuario: {item.payload.userId}</Text>}
           </View>
         )}
       />

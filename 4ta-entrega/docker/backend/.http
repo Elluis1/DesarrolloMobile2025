@@ -7,7 +7,7 @@ Content-Type: application/json
   "toAccount": "67890",
   "amount": 1500,
   "currency": "USD",
-  "userId": "user_1"
+  "userId": "user_123"
 }
 
 ###

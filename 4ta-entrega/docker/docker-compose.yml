@@ -19,10 +19,11 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092  # 🔹 cambiar de 127.0.0.1 a kafka
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     ports:
       - "9092:9092"
     networks:
@@ -35,24 +36,37 @@ services:
       - ./backend:/app
     working_dir: /app
     environment:
-      KAFKA_BROKER: kafka:9092  # 🔹 el backend se conecta usando el nombre del servicio
+      KAFKA_BROKER: kafka:9092
     depends_on:
       - kafka
     ports:
       - "3000:3000"
     networks:
       - app-network
-  
+
   ws-gateway:
     build: ./backend
     container_name: ws-gateway
     command: node src/gateway.js
-    ports:
-      - "8080:8080"
-    networks:
-      - app-network
     depends_on:
       - kafka
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_BROKER: kafka:9092
+    networks:
+      - app-network
+
+  orchestrator:
+    build: ./backend
+    container_name: orchestrator
+    command: node src/orchestrator.js
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKER: kafka:9092
+    networks:
+      - app-network
 
 networks:
   app-network:

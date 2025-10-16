@@ -9,4 +9,7 @@ const kafka = new Kafka({
 });
 
 export const producer = kafka.producer();
-export const consumer = kafka.consumer({ groupId: "orchestrator-group" });
+
+export function createConsumer(groupId) {
+  return kafka.consumer({ groupId });
+}
