@@ -6,6 +6,7 @@ const USER_ID = "user_123";
 
 export default function LiveEventsScreen() {
   const events = useTxnEvents(USER_ID);
+  console.log("Eventos actuales:", events);
 
   return (
     <View style={styles.container}>
@@ -13,7 +14,7 @@ export default function LiveEventsScreen() {
 
       <FlatList
         data={events}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id || Math.random().toString()}
         renderItem={({ item }) => (
           <View style={styles.event}>
             <Text style={styles.type}>{item.type}</Text>
