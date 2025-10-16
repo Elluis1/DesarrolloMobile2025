@@ -1,7 +1,9 @@
 import WebSocket, { WebSocketServer } from "ws";
-import { consumer } from "./utils/kafka.js";
+import { createConsumer } from "./utils/kafka.js";
 
 const RETRY_INTERVAL = 5000;
+
+const consumer = createConsumer("gateway-group");
 
 // Set de clientes WS
 const clients = new Set();
