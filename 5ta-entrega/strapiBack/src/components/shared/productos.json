@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_shared_productos",
+  "info": {
+    "displayName": "productos",
+    "icon": "bulletList"
+  },
+  "options": {},
+  "attributes": {
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    },
+    "cantidad": {
+      "type": "integer"
+    },
+    "precio_unitario": {
+      "type": "decimal"
+    }
+  },
+  "config": {}
+}
