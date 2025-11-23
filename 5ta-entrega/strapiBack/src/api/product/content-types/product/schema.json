@@ -4,7 +4,7 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "Product"
+    "displayName": "Products"
   },
   "options": {
     "draftAndPublish": false
@@ -51,6 +51,12 @@
       "relation": "manyToOne",
       "target": "api::marca.marca",
       "inversedBy": "products"
+    },
+    "favorites": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::favorite.favorite",
+      "mappedBy": "product"
     }
   }
 }

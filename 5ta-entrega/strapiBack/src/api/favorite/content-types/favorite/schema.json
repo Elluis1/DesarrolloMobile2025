@@ -4,27 +4,24 @@
   "info": {
     "singularName": "favorite",
     "pluralName": "favorites",
-    "displayName": "Favorite"
+    "displayName": "Favorites"
   },
   "options": {
     "draftAndPublish": false
   },
-  "pluginOptions": {
-    "i18n": {
-      "localized": false
-    }
-  },
+  "pluginOptions": {},
   "attributes": {
     "user": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy": "favorite"
+      "inversedBy": "favorites"
     },
     "product": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::product.product"
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "favorites"
     }
   }
 }

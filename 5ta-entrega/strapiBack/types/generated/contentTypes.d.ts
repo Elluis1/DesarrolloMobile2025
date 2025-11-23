@@ -530,17 +530,12 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
 export interface ApiFavoriteFavorite extends Struct.CollectionTypeSchema {
   collectionName: 'favorites';
   info: {
-    displayName: 'Favorite';
+    displayName: 'Favorites';
     pluralName: 'favorites';
     singularName: 'favorite';
   };
   options: {
     draftAndPublish: false;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: false;
-    };
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -552,13 +547,13 @@ export interface ApiFavoriteFavorite extends Struct.CollectionTypeSchema {
       'api::favorite.favorite'
     > &
       Schema.Attribute.Private;
-    product: Schema.Attribute.Relation<'oneToOne', 'api::product.product'>;
+    product: Schema.Attribute.Relation<'manyToOne', 'api::product.product'>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     user: Schema.Attribute.Relation<
-      'oneToOne',
+      'manyToOne',
       'plugin::users-permissions.user'
     >;
   };
@@ -657,7 +652,7 @@ export interface ApiPedidoPedido extends Struct.CollectionTypeSchema {
 export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   collectionName: 'products';
   info: {
-    displayName: 'Product';
+    displayName: 'Products';
     pluralName: 'products';
     singularName: 'product';
   };
@@ -671,6 +666,7 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     descripcion: Schema.Attribute.Blocks;
     descuento: Schema.Attribute.Decimal;
+    favorites: Schema.Attribute.Relation<'oneToMany', 'api::favorite.favorite'>;
     imagenes: Schema.Attribute.Media<'images', true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1145,7 +1141,6 @@ export interface PluginUsersPermissionsUser
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1159,7 +1154,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
-    favorite: Schema.Attribute.Relation<'oneToOne', 'api::favorite.favorite'>;
+    favorites: Schema.Attribute.Relation<'oneToMany', 'api::favorite.favorite'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

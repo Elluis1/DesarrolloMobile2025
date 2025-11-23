@@ -9,8 +9,9 @@
     "displayName": "User"
   },
   "options": {
-    "timestamps": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "username": {
       "type": "string",
@@ -65,9 +66,9 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "favorite": {
+    "favorites": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "api::favorite.favorite",
       "mappedBy": "user"
     }
