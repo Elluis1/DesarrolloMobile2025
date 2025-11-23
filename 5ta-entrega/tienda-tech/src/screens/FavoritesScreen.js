@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, FlatList, ActivityIndicator, StyleSheet, Text } from "react-native";
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import ProductCard from "../components/ProductCard";
 import { API_URL } from "../api/auth";
 import { useFocusEffect } from "@react-navigation/native";
-
-
 
 export default function FavoritesScreen() {
   const { user } = useContext(AuthContext);
@@ -29,10 +35,9 @@ export default function FavoritesScreen() {
       const json = await res.json();
       console.log("⭐ Favoritos cargados:", json.data);
 
-      // Extraemos los objetos completos de producto
       const products = json.data
         .map(fav => fav.product)
-        .filter(Boolean); // descartamos nulls
+        .filter(Boolean);
       setFavorites(products);
     } catch (err) {
       console.log("❌ Error cargando favoritos:", err);
@@ -62,24 +67,34 @@ export default function FavoritesScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={favorites}
-        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
-        renderItem={({ item }) => (
-          <ProductCard
-            product={item}
-            favorites={favorites.map(p => p.id)}
-            reloadFavorites={fetchFavorites}
-          />
-        )}
-        contentContainerStyle={{ padding: 16 }}
-      />
-    </View>
+    <SafeAreaView style={styles.safeContainer}>
+      <StatusBar barStyle="dark-content" backgroundColor="#f2f2f2" />
+      <View style={styles.container}>
+        <FlatList
+          data={favorites}
+          keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+          renderItem={({ item }) => (
+            <ProductCard
+              product={item}
+              favorites={favorites.map(p => p.id)}
+              reloadFavorites={fetchFavorites}
+            />
+          )}
+          contentContainerStyle={{ padding: 16 }}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f2f2f2" },
+  safeContainer: {
+    flex: 1,
+    backgroundColor: "#f2f2f2",
+  },
+  container: {
+    flex: 1,
+    paddingTop: StatusBar.currentHeight || 0,
+  },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
