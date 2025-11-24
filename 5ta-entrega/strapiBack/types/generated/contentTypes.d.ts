@@ -618,37 +618,6 @@ export interface ApiMarcaMarca extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiPedidoPedido extends Struct.CollectionTypeSchema {
-  collectionName: 'pedidos';
-  info: {
-    displayName: 'Pedido';
-    pluralName: 'pedidos';
-    singularName: 'pedido';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    estado: Schema.Attribute.Enumeration<['pendiente', 'pagado', 'cancelado']>;
-    fecha: Schema.Attribute.DateTime;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::pedido.pedido'
-    > &
-      Schema.Attribute.Private;
-    productos: Schema.Attribute.Component<'shared.productos', true>;
-    publishedAt: Schema.Attribute.DateTime;
-    total: Schema.Attribute.Decimal;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   collectionName: 'products';
   info: {
@@ -1202,7 +1171,6 @@ declare module '@strapi/strapi' {
       'api::favorite.favorite': ApiFavoriteFavorite;
       'api::global.global': ApiGlobalGlobal;
       'api::marca.marca': ApiMarcaMarca;
-      'api::pedido.pedido': ApiPedidoPedido;
       'api::product.product': ApiProductProduct;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
