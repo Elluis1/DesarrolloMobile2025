@@ -10,9 +10,28 @@ import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import HomeScreen from "../screens/HomeScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
+import ProductDetailScreen from "../screens/ProductDetailScreen"; // 🔹 import
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+// Stack de Home para navegación a detalle
+function HomeStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="HomeMain"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ProductDetail"
+        component={ProductDetailScreen}
+        options={{ title: "Detalle del Producto" }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 // Tabs para la app logueada
 function AppTabs() {
@@ -30,7 +49,8 @@ function AppTabs() {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      {/* 🔹 Aquí usamos HomeStack en lugar de HomeScreen */}
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
     </Tab.Navigator>
   );

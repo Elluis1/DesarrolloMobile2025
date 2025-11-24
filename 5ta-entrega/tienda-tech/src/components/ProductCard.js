@@ -2,13 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { toggleFavorite } from "../api/favorites";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ProductCard({ product, favorites, reloadFavorites }) {
   const { user } = useContext(AuthContext);
 
-  const [favorite, setFavorite] = useState(
-    favorites.includes(product.id)
-  );
+  const navigation = useNavigation();
+
+  const [favorite, setFavorite] = useState(favorites.includes(product.id));
 
   // Actualiza cuando cambian los favoritos externos
   useEffect(() => {
@@ -46,6 +47,17 @@ export default function ProductCard({ product, favorites, reloadFavorites }) {
         <Text style={styles.favText}>
           {favorite ? "❤️ Quitar de favoritos" : "🤍 Agregar a favoritos"}
         </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("ProductDetail", {
+            product, // 🔹 asegurarse de pasar un objeto completo
+            favorites,
+            reloadFavorites,
+          })
+        }
+      >
+        <Text style={styles.title}>Ver detalle</Text>
       </TouchableOpacity>
     </View>
   );

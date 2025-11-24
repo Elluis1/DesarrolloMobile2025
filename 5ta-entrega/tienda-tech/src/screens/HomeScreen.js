@@ -177,7 +177,7 @@ export default function HomeScreen() {
         </View>
 
         <FlatList
-          data={filteredProducts}
+          data={filteredProducts.filter((p) => p != null)} // 🔹 filtro extra de seguridad
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <ProductCard
