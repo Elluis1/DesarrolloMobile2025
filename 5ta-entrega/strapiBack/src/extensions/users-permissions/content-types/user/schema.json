@@ -71,6 +71,12 @@
       "relation": "oneToMany",
       "target": "api::favorite.favorite",
       "mappedBy": "user"
+    },
+    "cart": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::cart.cart",
+      "mappedBy": "user"
     }
   }
 }
