@@ -11,32 +11,38 @@ import {
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { toggleFavorite } from "../api/favorites";
+import { useCart } from "../context/CartContext";
 
 export default function ProductDetailScreen({ route, navigation }) {
-  const { product, favorites: initialFavorites, reloadFavorites } = route.params;
+  const {
+    product,
+    favorites: initialFavorites,
+    reloadFavorites,
+  } = route.params;
   const { user } = useContext(AuthContext);
 
   const [favorites, setFavorites] = useState(initialFavorites || []);
   const [isFavorite, setIsFavorite] = useState(
     initialFavorites?.includes(product?.id) || false
   );
-  
+
   const handleFav = async () => {
     if (!user || !product) return;
-  
+
     try {
       const result = await toggleFavorite(user.id, product.id);
-  
+
       // Cambiamos directamente el estado local para reflejar el color
       setIsFavorite(result.added);
-  
+
       // Actualizamos favoritos globales si hace falta
       reloadFavorites && reloadFavorites();
     } catch (err) {
       console.log("❌ Error al cambiar favorito:", err);
     }
   };
-  
+
+  const { addToCart } = useCart();
 
   if (!product) {
     return (
@@ -78,6 +84,9 @@ export default function ProductDetailScreen({ route, navigation }) {
           <Text style={styles.favText}>
             {isFavorite ? "❤️ Quitar de favoritos" : "🤍 Agregar a favoritos"}
           </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => addToCart(product)}>
+          <Text>Añadir al carrito</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

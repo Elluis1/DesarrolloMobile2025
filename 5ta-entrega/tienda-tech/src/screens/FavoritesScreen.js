@@ -40,7 +40,7 @@ export default function FavoritesScreen() {
         .filter(Boolean);
       setFavorites(products);
     } catch (err) {
-      console.log("❌ Error cargando favoritos:", err);
+      console.log("Error cargando favoritos:", err);
     } finally {
       setLoading(false);
     }
@@ -61,7 +61,7 @@ export default function FavoritesScreen() {
   if (favorites.length === 0) {
     return (
       <View style={styles.center}>
-        <Text>No tienes productos favoritos 😢</Text>
+        <Text>No tienes productos favoritos</Text>
       </View>
     );
   }

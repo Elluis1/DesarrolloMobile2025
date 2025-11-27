@@ -6,12 +6,10 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function ProductCard({ product, favorites, reloadFavorites }) {
   const { user } = useContext(AuthContext);
-
   const navigation = useNavigation();
 
   const [favorite, setFavorite] = useState(favorites.includes(product.id));
 
-  // Actualiza cuando cambian los favoritos externos
   useEffect(() => {
     setFavorite(favorites.includes(product.id));
   }, [favorites]);
@@ -20,12 +18,10 @@ export default function ProductCard({ product, favorites, reloadFavorites }) {
     try {
       const result = await toggleFavorite(user.id, product.id);
 
-      // cambia el estado local
       if (result.added) setFavorite(true);
       if (result.removed) setFavorite(false);
 
-      // refresca favoritos en HomeScreen
-      reloadFavorites();
+      reloadFavorites(); // esto sí está bien
     } catch (err) {
       console.log("❌ Error al cambiar favorito:", err);
     }
@@ -48,12 +44,16 @@ export default function ProductCard({ product, favorites, reloadFavorites }) {
           {favorite ? "❤️ Quitar de favoritos" : "🤍 Agregar a favoritos"}
         </Text>
       </TouchableOpacity>
+
+      {/* 🔥 Navegación corregida: YA NO enviamos reloadFavorites */}
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate("ProductDetail", {
-            product, // 🔹 asegurarse de pasar un objeto completo
-            favorites,
-            reloadFavorites,
+          navigation.navigate("Home", {
+            screen: "ProductDetail",
+            params: {
+              product,
+              favorites,
+            },
           })
         }
       >

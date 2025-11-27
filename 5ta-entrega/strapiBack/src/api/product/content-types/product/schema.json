@@ -57,12 +57,6 @@
       "relation": "oneToMany",
       "target": "api::favorite.favorite",
       "mappedBy": "product"
-    },
-    "cart_items": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::cart-item.cart-item",
-      "mappedBy": "product"
     }
   }
 }
