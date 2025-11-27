@@ -12,6 +12,7 @@ import HomeScreen from "../screens/HomeScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import ProductDetailScreen from "../screens/ProductDetailScreen";
 import CartScreen from "../screens/CartScreen";
+import LogoutScreen from "../screens/LogoutScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -47,6 +48,7 @@ function AppTabs() {
           if (route.name === "Home") iconName = "home-outline";
           else if (route.name === "Favorites") iconName = "heart-outline";
           else if (route.name === "Cart") iconName = "cart-outline";
+          else if (route.name === "Logout") iconName = "log-out-outline";
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -57,6 +59,7 @@ function AppTabs() {
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
       <Tab.Screen name="Cart" component={CartScreen} />
+      <Tab.Screen name="Logout" component={LogoutScreen} />
     </Tab.Navigator>
   );
 }

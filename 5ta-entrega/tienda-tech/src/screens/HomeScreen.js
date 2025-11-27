@@ -14,9 +14,11 @@ import ProductCard from "../components/ProductCard";
 import { API_URL } from "../api/auth";
 import { AuthContext } from "../context/AuthContext";
 import { getUserFavorites } from "../api/favorites";
+import { useCart } from "../context/CartContext";
 
 export default function HomeScreen() {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
+  const { clearCart } = useCart();
 
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
