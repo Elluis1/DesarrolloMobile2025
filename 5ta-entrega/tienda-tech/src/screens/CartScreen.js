@@ -25,7 +25,7 @@ export default function CartScreen() {
 
     try {
       const order = await createOrder(user.id);
-      alert("Pedido creado con éxito! ID: " + order.id);
+      alert("Pedido creado con éxito!");
     } catch (err) {
       console.log("❌ Error creando pedido:", err);
       alert("Error creando pedido.");
