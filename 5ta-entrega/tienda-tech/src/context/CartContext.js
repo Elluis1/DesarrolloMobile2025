@@ -51,8 +51,8 @@ export const CartProvider = ({ children, jwt }) => {
     const items = cartItems.map((item) => ({
       product: item.id, // relación con el producto
       nombre: item.nombre, // redundante, opcional
-      cantidad: item.quantity, // ⚠️ aquí usamos "cantidad"
-      precio: item.precio,
+      quantity: item.quantity, // ⚠️ aquí usamos "cantidad"
+      price: item.precio,
     }));
 
     try {

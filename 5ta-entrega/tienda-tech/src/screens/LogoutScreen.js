@@ -12,7 +12,6 @@ export default function LogoutScreen({ navigation }) {
     const doLogout = async () => {
       await logout();
       clearCart();
-      // Podés redirigir al Home o a Login si es necesario
       navigation.navigate("Home"); // o "Login"
     };
     doLogout();

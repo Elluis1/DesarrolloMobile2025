@@ -13,6 +13,7 @@ import FavoritesScreen from "../screens/FavoritesScreen";
 import ProductDetailScreen from "../screens/ProductDetailScreen";
 import CartScreen from "../screens/CartScreen";
 import LogoutScreen from "../screens/LogoutScreen";
+import FakePaymentScreen from "../screens/FakePaymentScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -27,11 +28,20 @@ function HomeStack() {
         options={{ headerShown: false }}
       />
 
+      <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function CartStack() {
+  return (
+    <Stack.Navigator>
       <Stack.Screen
-        name="ProductDetail"
-        component={ProductDetailScreen}
-        options={{ title: "Detalle del Producto" }}
+        name="CartMain"
+        component={CartScreen}
+        options={{ headerShown: false }}
       />
+      <Stack.Screen name="FakePayment" component={FakePaymentScreen} />
     </Stack.Navigator>
   );
 }
@@ -58,7 +68,7 @@ function AppTabs() {
     >
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
-      <Tab.Screen name="Cart" component={CartScreen} />
+      <Tab.Screen name="Cart" component={CartStack} />
       <Tab.Screen name="Logout" component={LogoutScreen} />
     </Tab.Navigator>
   );

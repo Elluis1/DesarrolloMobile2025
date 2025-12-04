@@ -12,10 +12,12 @@ import {
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import CartItem from "../components/CartItem";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CartScreen() {
   const { cartItems, getTotal, clearCart, createOrder } = useCart();
   const { user } = useContext(AuthContext);
+  const navigation = useNavigation();
 
   const handleCreateOrder = async () => {
     if (!user) {
@@ -37,7 +39,9 @@ export default function CartScreen() {
       <View
         style={[
           styles.container,
-          { paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 },
+          {
+            paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+          },
         ]}
       >
         <Text style={styles.title}>Carrito</Text>
@@ -61,9 +65,11 @@ export default function CartScreen() {
               </View>
               <View style={styles.buttonWrapper}>
                 <Button
-                  title="Hacer pedido"
-                  onPress={handleCreateOrder}
-                  disabled={!user} // deshabilitado si no hay usuario
+                  title="Ir a pagar"
+                  onPress={() =>
+                    navigation.navigate("FakePayment", { total: getTotal() })
+                  }
+                  disabled={!user}
                 />
               </View>
             </View>
