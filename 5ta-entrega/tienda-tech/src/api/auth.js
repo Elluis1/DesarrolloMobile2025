@@ -1,4 +1,4 @@
-export const API_URL = "http://192.168.1.101:1337/api";
+export const API_URL = "http://192.168.1.103:1337/api";
 
 export async function loginUser(email, password) {
   const res = await fetch(`${API_URL}/auth/local`, {
