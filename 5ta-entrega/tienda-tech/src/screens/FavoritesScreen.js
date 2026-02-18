@@ -30,7 +30,7 @@ export default function FavoritesScreen() {
     try {
       setLoading(true);
       const res = await fetch(
-        `${API_URL}/favorites?filters[user][id][$eq]=${user.id}&populate=product`
+        `${API_URL}/favorites?filters[user][id][$eq]=${user.id}&populate[product][populate]=*`
       );
       const json = await res.json();
       console.log("⭐ Favoritos cargados:", json.data);

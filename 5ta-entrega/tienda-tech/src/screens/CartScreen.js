@@ -8,6 +8,7 @@ import {
   StyleSheet,
   StatusBar,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
@@ -36,15 +37,8 @@ export default function CartScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View
-        style={[
-          styles.container,
-          {
-            paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-          },
-        ]}
-      >
-        <Text style={styles.title}>Carrito</Text>
+      <View style={styles.container}>
+        <Text style={styles.title}>🛒 Mi Carrito</Text>
 
         {cartItems.length === 0 ? (
           <Text style={styles.empty}>Tu carrito está vacío</Text>
@@ -54,24 +48,32 @@ export default function CartScreen() {
               data={cartItems}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => <CartItem item={item} />}
-              contentContainerStyle={{ paddingBottom: 20 }}
+              contentContainerStyle={{ paddingBottom: 120 }}
+              showsVerticalScrollIndicator={false}
             />
 
-            <Text style={styles.total}>Total: ${getTotal()}</Text>
+            {/* FOOTER FIJO */}
+            <View style={styles.checkoutContainer}>
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>Total</Text>
+                <Text style={styles.totalPrice}>AR$ {getTotal()}</Text>
+              </View>
 
-            <View style={styles.buttonsContainer}>
-              <View style={styles.buttonWrapper}>
-                <Button title="Vaciar carrito" onPress={clearCart} />
-              </View>
-              <View style={styles.buttonWrapper}>
-                <Button
-                  title="Ir a pagar"
-                  onPress={() =>
-                    navigation.navigate("FakePayment", { total: getTotal() })
-                  }
-                  disabled={!user}
-                />
-              </View>
+              <TouchableOpacity
+                style={styles.payButton}
+                onPress={() =>
+                  navigation.navigate("FakePayment", {
+                    total: getTotal(),
+                  })
+                }
+                disabled={!user}
+              >
+                <Text style={styles.payText}>Ir a pagar</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.clearButton} onPress={clearCart}>
+                <Text style={styles.clearText}>Vaciar carrito</Text>
+              </TouchableOpacity>
             </View>
           </>
         )}
@@ -83,32 +85,75 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f9fa",
   },
+
   container: {
     flex: 1,
     paddingHorizontal: 16,
   },
+
   title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  empty: {
-    fontSize: 18,
-    color: "gray",
-    marginTop: 40,
-    textAlign: "center",
-  },
-  total: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     marginVertical: 16,
   },
-  buttonsContainer: {
-    marginBottom: 20,
+
+  empty: {
+    fontSize: 18,
+    color: "gray",
+    marginTop: 60,
+    textAlign: "center",
   },
-  buttonWrapper: {
-    marginVertical: 5,
+
+  checkoutContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#fff",
+    padding: 16,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    elevation: 12,
+  },
+
+  totalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+
+  totalLabel: {
+    fontSize: 18,
+    color: "#666",
+  },
+
+  totalPrice: {
+    fontSize: 22,
+    fontWeight: "bold",
+  },
+
+  payButton: {
+    backgroundColor: "#111",
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+
+  payText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  clearButton: {
+    alignItems: "center",
+  },
+
+  clearText: {
+    color: "red",
+    fontWeight: "600",
   },
 });

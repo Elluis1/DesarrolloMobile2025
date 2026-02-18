@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { toggleFavorite } from "../api/favorites";
 import { useNavigation } from "@react-navigation/native";
+import { API_URL } from "../api/auth";
 
 export default function ProductCard({ product, favorites, reloadFavorites }) {
   const { user } = useContext(AuthContext);
@@ -14,6 +21,16 @@ export default function ProductCard({ product, favorites, reloadFavorites }) {
     setFavorite(favorites.includes(product.id));
   }, [favorites]);
 
+  const baseUrl = API_URL.replace("/api", "");
+
+  const imageUrl =
+    product.imagenes && product.imagenes.length > 0
+      ? `${baseUrl}${
+          product.imagenes[0].formats?.small?.url ||
+          product.imagenes[0].url
+        }`
+      : null;
+
   const handleFav = async () => {
     try {
       const result = await toggleFavorite(user.id, product.id);
@@ -21,44 +38,100 @@ export default function ProductCard({ product, favorites, reloadFavorites }) {
       if (result.added) setFavorite(true);
       if (result.removed) setFavorite(false);
 
-      reloadFavorites(); // esto sí está bien
+      reloadFavorites();
     } catch (err) {
       console.log("❌ Error al cambiar favorito:", err);
     }
   };
 
+  const discountedPrice =
+    product.descuento > 0
+      ? product.precio - (product.precio * product.descuento) / 100
+      : null;
+
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>{product.nombre}</Text>
-      <Text style={styles.desc}>
-        {product.descripcion?.[0]?.children?.[0]?.text}
-      </Text>
-      <Text style={styles.price}>💵 AR$ {product.precio}</Text>
-      <Text style={styles.stock}>Stock: {product.stock}</Text>
+      {/* Imagen */}
+      <View style={styles.imageContainer}>
+        {imageUrl && (
+          <Image
+            source={{ uri: imageUrl }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        )}
 
-      <TouchableOpacity
-        style={[styles.favButton, favorite && styles.favActive]}
-        onPress={handleFav}
-      >
-        <Text style={styles.favText}>
-          {favorite ? "❤️ Quitar de favoritos" : "🤍 Agregar a favoritos"}
+        {/* Corazón flotante */}
+        <TouchableOpacity
+          style={styles.heartButton}
+          onPress={handleFav}
+        >
+          <Text style={styles.heart}>
+            {favorite ? "❤️" : "🤍"}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Badge descuento */}
+        {product.descuento > 0 && (
+          <View style={styles.discountBadge}>
+            <Text style={styles.discountText}>
+              -{product.descuento}%
+            </Text>
+          </View>
+        )}
+      </View>
+
+      {/* Info */}
+      <View style={styles.infoContainer}>
+        <Text style={styles.title} numberOfLines={1}>
+          {product.nombre}
         </Text>
-      </TouchableOpacity>
 
-      {/* 🔥 Navegación corregida: YA NO enviamos reloadFavorites */}
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("Home", {
-            screen: "ProductDetail",
-            params: {
-              product,
-              favorites,
-            },
-          })
-        }
-      >
-        <Text style={styles.title}>Ver detalle</Text>
-      </TouchableOpacity>
+        {/* Precio */}
+        {discountedPrice ? (
+          <>
+            <Text style={styles.oldPrice}>
+              AR$ {product.precio}
+            </Text>
+            <Text style={styles.price}>
+              AR$ {discountedPrice.toFixed(0)}
+            </Text>
+          </>
+        ) : (
+          <Text style={styles.price}>
+            AR$ {product.precio}
+          </Text>
+        )}
+
+        {/* Stock dinámico */}
+        <Text
+          style={[
+            styles.stock,
+            product.stock > 5
+              ? styles.inStock
+              : styles.lowStock,
+          ]}
+        >
+          {product.stock > 0
+            ? `Stock: ${product.stock}`
+            : "Sin stock"}
+        </Text>
+
+        {/* Botón detalle */}
+        <TouchableOpacity
+          style={styles.detailButton}
+          onPress={() =>
+            navigation.navigate("Home", {
+              screen: "ProductDetail",
+              params: { product, favorites },
+            })
+          }
+        >
+          <Text style={styles.detailText}>
+            Ver detalle
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -66,41 +139,96 @@ export default function ProductCard({ product, favorites, reloadFavorites }) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 10,
-    marginBottom: 12,
-    elevation: 3,
+    borderRadius: 18,
+    marginBottom: 20,
+    overflow: "hidden",
+    elevation: 6,
   },
-  title: {
+
+  imageContainer: {
+    position: "relative",
+  },
+
+  image: {
+    width: "100%",
+    height: 200,
+  },
+
+  heartButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    backgroundColor: "#fff",
+    borderRadius: 30,
+    padding: 6,
+    elevation: 4,
+  },
+
+  heart: {
     fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 4,
   },
-  desc: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 8,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  stock: {
-    fontSize: 14,
-    color: "#444",
-    marginBottom: 12,
-  },
-  favButton: {
-    backgroundColor: "#ddd",
-    paddingVertical: 10,
+
+  discountBadge: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    backgroundColor: "#ff3b3b",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 8,
   },
-  favActive: {
-    backgroundColor: "#ffcccc",
+
+  discountText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 12,
   },
-  favText: {
-    textAlign: "center",
+
+  infoContainer: {
+    padding: 14,
+  },
+
+  title: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 6,
+  },
+
+  price: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#111",
+    marginBottom: 4,
+  },
+
+  oldPrice: {
+    fontSize: 14,
+    color: "#888",
+    textDecorationLine: "line-through",
+  },
+
+  stock: {
+    fontSize: 13,
+    marginBottom: 12,
+  },
+
+  inStock: {
+    color: "green",
+  },
+
+  lowStock: {
+    color: "orange",
+  },
+
+  detailButton: {
+    backgroundColor: "#111",
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+
+  detailText: {
+    color: "#fff",
     fontWeight: "600",
   },
 });

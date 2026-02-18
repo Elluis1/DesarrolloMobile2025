@@ -39,6 +39,7 @@ export default function HomeScreen() {
       setLoading(true);
       const resProducts = await fetch(`${API_URL}/products?populate=*`);
       const jsonProducts = await resProducts.json();
+      console.log("✅ Productos cargados:", jsonProducts.data);
       setAllProducts(jsonProducts.data);
       setFilteredProducts(jsonProducts.data);
 
@@ -106,91 +107,115 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f2f2f2" />
-      <View style={styles.container}>
-        {/* Búsqueda */}
+      <StatusBar barStyle="dark-content" backgroundColor="#f8f9fa" />
+
+      {/* HEADER */}
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.greeting}>Hola 👋</Text>
+          <Text style={styles.username}>{user?.username || "Usuario"}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={() => {
+            clearCart();
+            logout();
+          }}
+        >
+          <Text style={styles.logoutText}>Salir</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* BUSCADOR */}
+      <View style={styles.searchContainer}>
         <TextInput
-          placeholder="Buscar producto..."
+          placeholder="🔍 Buscar productos..."
           value={search}
           onChangeText={setSearch}
-          style={styles.input}
+          style={styles.searchInput}
         />
+      </View>
 
-        {/* Filtros de categoría */}
-        <View style={styles.filtersContainer}>
-          <FlatList
-            horizontal
-            data={categories}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() =>
-                  setFilterCategory(filterCategory === item.id ? null : item.id)
-                }
-                style={[
-                  styles.filterButton,
-                  filterCategory === item.id && styles.filterActive,
-                ]}
-              >
-                <Text>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-
-        {/* Filtros de marca */}
-        <View style={styles.filtersContainer}>
-          <FlatList
-            horizontal
-            data={brands}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() =>
-                  setFilterBrand(filterBrand === item.id ? null : item.id)
-                }
-                style={[
-                  styles.filterButton,
-                  filterBrand === item.id && styles.filterActive,
-                ]}
-              >
-                <Text>{item.nombre}</Text>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-
-        {/* Filtro por precio */}
-        <View style={styles.priceContainer}>
-          <TextInput
-            placeholder="Precio mínimo"
-            value={priceMin}
-            onChangeText={setPriceMin}
-            keyboardType="numeric"
-            style={styles.priceInput}
-          />
-          <TextInput
-            placeholder="Precio máximo"
-            value={priceMax}
-            onChangeText={setPriceMax}
-            keyboardType="numeric"
-            style={styles.priceInput}
-          />
-        </View>
-
+      {/* FILTROS CATEGORÍA */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Categorías</Text>
         <FlatList
-          data={filteredProducts.filter((p) => p != null)} // 🔹 filtro extra de seguridad
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={categories}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() =>
+                setFilterCategory(filterCategory === item.id ? null : item.id)
+              }
+              style={[
+                styles.chip,
+                filterCategory === item.id && styles.chipActive,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.chipText,
+                  filterCategory === item.id && styles.chipTextActive,
+                ]}
+              >
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+
+      {/* FILTROS MARCA */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Marcas</Text>
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={brands}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() =>
+                setFilterBrand(filterBrand === item.id ? null : item.id)
+              }
+              style={[
+                styles.chip,
+                filterBrand === item.id && styles.chipActive,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.chipText,
+                  filterBrand === item.id && styles.chipTextActive,
+                ]}
+              >
+                {item.nombre}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+
+      {/* PRODUCTOS */}
+      <FlatList
+        data={filteredProducts.filter((p) => p != null)}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={{ flex: 1, margin: 6 }}>
             <ProductCard
               product={item}
               favorites={favorites}
               reloadFavorites={loadFavorites}
             />
-          )}
-          contentContainerStyle={{ padding: 16 }}
-        />
-      </View>
+          </View>
+        )}
+        numColumns={2}
+        contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 20 }}
+        showsVerticalScrollIndicator={false}
+      />
     </SafeAreaView>
   );
 }
@@ -198,42 +223,82 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#f8f9fa",
   },
-  container: {
-    flex: 1,
-    paddingTop: StatusBar.currentHeight || 0,
-  },
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  input: {
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 8,
-    margin: 12,
-  },
-  filtersContainer: {
-    flexDirection: "row",
-    marginBottom: 8,
-  },
-  filterButton: {
-    backgroundColor: "#ddd",
-    padding: 10,
-    borderRadius: 8,
-    marginHorizontal: 4,
-  },
-  filterActive: {
-    backgroundColor: "#ffcccc",
-  },
-  priceContainer: {
+
+  header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginHorizontal: 12,
-    marginBottom: 12,
-  },
-  priceInput: {
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     backgroundColor: "#fff",
-    padding: 8,
-    borderRadius: 8,
-    width: "48%",
+    elevation: 4,
+  },
+
+  greeting: {
+    fontSize: 16,
+    color: "#666",
+  },
+
+  username: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+
+  logoutButton: {
+    backgroundColor: "#111",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+
+  logoutText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+
+  searchContainer: {
+    padding: 16,
+  },
+
+  searchInput: {
+    backgroundColor: "#fff",
+    padding: 12,
+    borderRadius: 14,
+    elevation: 3,
+  },
+
+  section: {
+    paddingLeft: 16,
+    marginBottom: 10,
+  },
+
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+
+  chip: {
+    backgroundColor: "#e5e5e5",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
+  },
+
+  chipActive: {
+    backgroundColor: "#111",
+  },
+
+  chipText: {
+    color: "#333",
+    fontSize: 14,
+  },
+
+  chipTextActive: {
+    color: "#fff",
+    fontWeight: "600",
   },
 });
