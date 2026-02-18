@@ -44,7 +44,7 @@ export const CartProvider = ({ children, jwt }) => {
   const getTotal = () =>
     cartItems.reduce((total, item) => total + item.precio * item.quantity, 0);
 
-  const createOrder = async (userId) => {
+  const createOrder = async (userId, address) => {
     if (!userId || cartItems.length === 0) return null;
 
     // Mapeamos los items del carrito usando "cantidad" como espera Strapi
@@ -65,6 +65,7 @@ export const CartProvider = ({ children, jwt }) => {
             items,
             total: getTotal(),
             orderStatus: "pendiente",
+            address: address, // 🔥 NUEVO
           },
         }),
       });

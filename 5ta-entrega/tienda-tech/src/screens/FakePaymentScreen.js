@@ -13,6 +13,7 @@ export default function FakePaymentScreen() {
   const { user } = useContext(AuthContext);
 
   const [card, setCard] = useState("");
+  const [address, setAddress] = useState("");
 
   const handlePayment = async () => {
     if (card !== "1111") {
@@ -20,14 +21,17 @@ export default function FakePaymentScreen() {
       return;
     }
 
+    if (!address.trim()) {
+      alert("Debes ingresar una dirección.");
+      return;
+    }
+
     try {
-      await createOrder(user.id);
-      clearCart();
+      await createOrder(user.id, address);
       alert("✅ Pago acreditado - Pedido creado con éxito!");
       navigation.navigate("Home");
     } catch (err) {
       alert("❌ Error al crear pedido.");
-      console.log(err);
     }
   };
 
@@ -41,6 +45,13 @@ export default function FakePaymentScreen() {
         placeholder="Número de tarjeta (usar 1111)"
         value={card}
         onChangeText={setCard}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Dirección de envío"
+        value={address}
+        onChangeText={setAddress}
       />
 
       <Button title="Pagar" onPress={handlePayment} />

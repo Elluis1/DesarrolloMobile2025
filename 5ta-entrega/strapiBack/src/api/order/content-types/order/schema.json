@@ -31,6 +31,9 @@
       "type": "component",
       "component": "shared.order-item",
       "repeatable": true
+    },
+    "address": {
+      "type": "string"
     }
   }
 }

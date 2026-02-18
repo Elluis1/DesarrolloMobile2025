@@ -15,11 +15,13 @@ import { API_URL } from "../api/auth";
 import { AuthContext } from "../context/AuthContext";
 import { getUserFavorites } from "../api/favorites";
 import { useCart } from "../context/CartContext";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function HomeScreen() {
   const { user, logout } = useContext(AuthContext);
   const { clearCart } = useCart();
 
+  const isFocused = useIsFocused();
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -70,8 +72,10 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isFocused) {
+      loadData();
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     let temp = [...allProducts];
@@ -87,10 +91,11 @@ export default function HomeScreen() {
         p.nombre.toLowerCase().includes(search.toLowerCase())
       );
     }
-    if (priceMin) {
+    if (priceMin !== "" && !isNaN(parseFloat(priceMin))) {
       temp = temp.filter((p) => p.precio >= parseFloat(priceMin));
     }
-    if (priceMax) {
+
+    if (priceMax !== "" && !isNaN(parseFloat(priceMax))) {
       temp = temp.filter((p) => p.precio <= parseFloat(priceMax));
     }
 
@@ -199,6 +204,31 @@ export default function HomeScreen() {
         />
       </View>
 
+      {/* FILTRO PRECIO */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Precio</Text>
+
+        <View style={styles.priceContainer}>
+          <TextInput
+            placeholder="Mín"
+            value={priceMin}
+            onChangeText={setPriceMin}
+            keyboardType="numeric"
+            style={styles.priceInput}
+          />
+
+          <Text style={{ marginHorizontal: 8 }}>-</Text>
+
+          <TextInput
+            placeholder="Máx"
+            value={priceMax}
+            onChangeText={setPriceMax}
+            keyboardType="numeric"
+            style={styles.priceInput}
+          />
+        </View>
+      </View>
+
       {/* PRODUCTOS */}
       <FlatList
         data={filteredProducts.filter((p) => p != null)}
@@ -300,5 +330,19 @@ const styles = StyleSheet.create({
   chipTextActive: {
     color: "#fff",
     fontWeight: "600",
+  },
+
+  priceContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  priceInput: {
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 10,
+    elevation: 2,
+    width: 90,
+    textAlign: "center",
   },
 });

@@ -23,9 +23,7 @@ export default function ProductDetailScreen({ route, navigation }) {
   const { user } = useContext(AuthContext);
 
   const [favorites, setFavorites] = useState(initialFavorites || []);
-  const [isFavorite, setIsFavorite] = useState(
-    initialFavorites?.includes(product?.id) || false
-  );
+  const isFavorite = favorites.includes(product.id);
 
   const baseUrl = API_URL.replace("/api", "");
 
@@ -39,13 +37,17 @@ export default function ProductDetailScreen({ route, navigation }) {
   const handleFav = async () => {
     if (!user || !product) return;
 
+    const alreadyFav = favorites.includes(product.id);
+
+    // UI instantánea (optimistic update)
+    if (alreadyFav) {
+      setFavorites((prev) => prev.filter((id) => id !== product.id));
+    } else {
+      setFavorites((prev) => [...prev, product.id]);
+    }
+
     try {
-      const result = await toggleFavorite(user.id, product.id);
-
-      // Cambiamos directamente el estado local para reflejar el color
-      setIsFavorite(result.added);
-
-      // Actualizamos favoritos globales si hace falta
+      await toggleFavorite(user.id, product.id);
       reloadFavorites && reloadFavorites();
     } catch (err) {
       console.log("❌ Error al cambiar favorito:", err);
